@@ -7,8 +7,6 @@ let types = {
     app: ['exe', 'dmg', 'pkg', "deb"]
 }
 
-// let dirname = process.argv.slice(2);
-
 function isFile(dir){
     //returns true or false
     return fs.lstatSync(dir).isFile();
@@ -42,10 +40,13 @@ function sendFile(src, dest,folderName){
         fs.mkdirSync(folderToMake);
     }
     let pathofdestFile = path.join(folderToMake,path.basename(src));
-    console.log(src+" -> "+pathofdestFile)
+    
     fs.copyFileSync(src,pathofdestFile);
 }
 function organize(src, dest){
+    if(src.includes("Organized_files")){
+        return;
+    }
     //content read
     if(isFile(src)){
         let folderName = checkExtension(src);

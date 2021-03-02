@@ -14,7 +14,8 @@ switch(command){
         helperFile.fn();
         break;
     case "organize":
-        organizeFile.fn();
+        console.log("Organizing the folders in path :",input[1]);
+        organizeFile.fn(input[1]); 
         break;
     default:
         console.log("Invalid command");
