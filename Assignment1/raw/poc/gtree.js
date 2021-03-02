@@ -8,7 +8,7 @@ function checkIfFile(path) {
     return fs.lstatSync(path).isFile();
 }
 
-function printFlat(path) {
+function printTree(path) {
     let isFile = checkIfFile(path);
     if (isFile) {
         console.log(path + ".*");
@@ -16,8 +16,8 @@ function printFlat(path) {
         console.log(path);
         let childrens = contentReader(path);
         for (let i = 0; i < childrens.length; i++) {
-            printFlat(path + "\\" + childrens[i]);
+            printTree(path + "\\" + childrens[i]);
         }
     }
 }
-printFlat("G:\\PAB-WEB\\Assignment1\\raw");
+printTree("G:\\PAB-WEB\\Assignment1\\raw");

@@ -3,9 +3,6 @@ let helperFile = require("./commands/help");
 let viewFile = require("./commands/view");
 let organizeFile = require("./commands/organize");
 
-//process.cwd() -> gets the path from where the program was calles
-//__filename -> the full file path of the mycli.js
-//__dirname -> the dir where the mycli.js is present
 
 let input = process.argv.slice(2);
 let command = input[0];
