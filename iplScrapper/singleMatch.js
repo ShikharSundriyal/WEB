@@ -16,7 +16,7 @@ function cb0(err, response, html) {
     let chSelector = cheerio.load(html);
     let a = chSelector(".widget-items.cta-link a");
     let matchResultsLink = "https://www.espncricinfo.com/" + chSelector(a).attr("href");
-    console.log(matchResultsLink);
+    console.log("Match Results Page Link :",matchResultsLink);
     request(matchResultsLink, cbMatchLinks);
 }
 /* fucntion to populate the suburls to all the matches*/
@@ -26,7 +26,8 @@ function cbMatchLinks(err, response, html) {
     for (let i = 2; i <= scorecardLinks.length; i += 4) {
         urlArray.push("https://www.espncricinfo.com/" + chSelector(scorecardLinks[i]).attr("href"));
     }
-    serialUrlProcessor(0, urlArray);
+
+    serialUrlProcessor(num, urlArray);
 }
 
 function serialUrlProcessor(num, urlArray) {
@@ -64,19 +65,18 @@ function cb(err, response, html) {
 
     createFolders(arr);
     arr = [];
+    console.log(arr);
     num++;
     serialUrlProcessor(num, urlArray);
+    console.log(num);
 }
 /* Function to create the folders for batsmen*/
 function createFolders(arr) {
     for (let i = 0; i < arr.length; i++) {
         let elem = arr[i];
-
         if (!fs.existsSync("./" + elem["TeamName"])) {
             fs.mkdirSync("./" + elem["TeamName"]);
-
         }
-
         if (!fs.existsSync("./" + elem["TeamName"] + "/" + elem["Name"] + ".json")) {
             // File does not exist
             fs.writeFileSync("./" + elem["TeamName"] + "/" + elem["Name"] + ".json", JSON.stringify([elem["details"]]));
@@ -86,6 +86,9 @@ function createFolders(arr) {
             data.push(elem["details"]);
             fs.writeFileSync("./" + elem["TeamName"] + "/" + elem["Name"] + ".json", JSON.stringify(data));
         }
+
     }
+    
+    arr = [];
 }
 

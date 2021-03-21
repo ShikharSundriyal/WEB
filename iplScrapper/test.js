@@ -23,5 +23,5 @@ function cbMatchLinks(err, response, html) {
     for (let i = 2; i <= scorecardLinks.length; i += 4) {
         urlArray.push("https://www.espncricinfo.com/" + chSelector(scorecardLinks[i]).attr("href"));
     }
-
+console.log(urlArray.length);
 }
