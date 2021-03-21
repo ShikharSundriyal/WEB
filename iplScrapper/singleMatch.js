@@ -16,7 +16,7 @@ function cb0(err, response, html) {
     let chSelector = cheerio.load(html);
     let a = chSelector(".widget-items.cta-link a");
     let matchResultsLink = "https://www.espncricinfo.com/" + chSelector(a).attr("href");
-    console.log("Match Results Page Link :",matchResultsLink);
+    console.log("Match Results Page Link :", matchResultsLink);
     request(matchResultsLink, cbMatchLinks);
 }
 /* fucntion to populate the suburls to all the matches*/
@@ -32,17 +32,46 @@ function cbMatchLinks(err, response, html) {
 
 function serialUrlProcessor(num, urlArray) {
 
-    if (num == urlArray.length)
+    if (num == urlArray.length){
+        console.log("Processing Completed.");
         return;
+    }
     request(urlArray[num], cb)
 }
 /* callback function to to process each match and each players scores*/
 function cb(err, response, html) {
     let chSelector = cheerio.load(html);
+    let mainBox = chSelector(".match-info.match-info-MATCH");
+    let resultBox = chSelector(mainBox).find(".description");
+    let teams = chSelector(mainBox).find(".name-detail a");
+    let team1 = chSelector(teams[0]).text();
+    let team2 = chSelector(teams[1]).text();
+    let winningTeam;
+    if (chSelector(teams[0]).hasClass("team-gray")) {
+        winningTeam = team1;
+    } else {
+        winningTeam = team2;
+    }
+    let str = chSelector(resultBox).text();
+    let MatchVenue = str.split(",")[1].trim();
+    let Matchdate = str.split(",")[2].trim();
     let batsmenTable = chSelector(".table.batsman")
     for (let i = 0; i < batsmenTable.length; i++) {
+        let opponentTeam;
         let playerRows = chSelector(batsmenTable[i]).find("tr");
         let teamName = chSelector(chSelector(".header-title.label")[i]).text().split("INNINGS")[0].trim();
+        if (i == 0) {
+            opponentTeam = team2;
+        }
+        else {
+            opponentTeam = team1;
+        }
+        let result;
+        if(winningTeam == opponentTeam){
+            result = "lost";
+        }else{
+            result = "win";
+        }
         for (let j = 0; j < playerRows.length; j++) {
             let playerRow = chSelector(playerRows[j]).find("td");
             if (playerRow.length == 8) {
@@ -53,7 +82,17 @@ function cb(err, response, html) {
                 let sixes = chSelector(playerRow[6]).text();
                 let strikeRate = chSelector(playerRow[7]).text();
                 //console.log(playerName + " " + runs +" " + balls + " "+ fours +" "+ sixes+" "+strikeRate);
-                let details = { "runs": runs, "balls": balls, "fours": fours, "sixes": sixes, "StrikeRate": strikeRate };
+                let details = {
+                    "runs": runs,
+                    "balls": balls,
+                    "fours": fours,
+                    "sixes": sixes,
+                    "StrikeRate": strikeRate,
+                    "date": Matchdate,
+                    "venue": MatchVenue,
+                    "result": result,
+                    "opponent": opponentTeam
+                };
                 arr.push({
                     TeamName: teamName,
                     Name: playerName,
@@ -62,13 +101,10 @@ function cb(err, response, html) {
             }
         }
     }
-
     createFolders(arr);
     arr = [];
-    console.log(arr);
     num++;
     serialUrlProcessor(num, urlArray);
-    console.log(num);
 }
 /* Function to create the folders for batsmen*/
 function createFolders(arr) {
@@ -88,7 +124,7 @@ function createFolders(arr) {
         }
 
     }
-    
+
     arr = [];
 }
 
