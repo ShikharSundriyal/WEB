@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+
+<body>
+    <input type="text">
+    <i class="fas fa-plus-circle"></i>
+    <h2>list of tasks</h2>
+    <ul></ul>
+    <script>
+        let addbtn = document.querySelector("i");
+        addbtn.addEventListener("click", function () {
+            let inputElem = document.querySelector("input");
+            // get the value that the user entered inside the function
+            let task = inputElem.value;
+            //create a new node of li type
+            let liElem = document.createElement("li");
+            // set the value of inside the list
+            liElem.innerText = task;
+            // find the unordered list
+            let ulElem = document.querySelector("ul");
+            // add your liElem or newly created list to the un ordered list
+            ulElem.append(liElem);
+            // empty the value of the input box so that next input can be taken
+            inputElem.value = "";
+        })
+    </script>
+</body>
+</head>
+
+</html>
