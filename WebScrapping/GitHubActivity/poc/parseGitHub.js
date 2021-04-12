@@ -9,7 +9,6 @@ function cb(err, response, html){
     let topics = chSelector(".no-underline.d-flex.flex-column.flex-justify-center");
     for(let i = 0;i<topics.length;i++){
         let topicContent = chSelector(topics[i]).text();
-        //console.log();
         topicContent = topicContent.split("\n")[3].trim(); 
         let topicName = chSelector(topics[i]).attr("href");
         subUrls[i] = "https://github.com"+topicName;
@@ -49,15 +48,17 @@ function cb2(err,response,html){
     let arr= [];
     for(let i = 0;i<issuesArray.length;i++){
         let link  = chSelector(issuesArray[i]).attr("href");
-        //console.log(link);
-        let issuesText = chSelector(issuesArray[i]).text()
+        
+        let issuesText = chSelector(issuesArray[i]).text();
+        console.log("https://github.com"+link,issuesText);
         let issuesObj = {
             Link:"https://github.com"+link,
             IssueName : issuesText
         }
-        arr.push(issuesObj);
+        let fName = link.split("/")[1]; 
+        //arr.push(issuesObj);
     }
-    //console.log(arr);
+    console.log("******************************");
     
    }
 
