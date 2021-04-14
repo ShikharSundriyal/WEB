@@ -1,5 +1,5 @@
-
 const puppet = require("puppeteer")
+let { answers } = require("./code")
 let browserOpenPromise = puppet.launch({
     headless: false,
     defaultViewport: null,
@@ -15,6 +15,45 @@ function waitNClick(selector) {
                 return page.click(selector);
             }).then(function () {
                 resolve();
+            })
+    });
+}
+
+function questionSolver(url) {
+    return new Promise(function (resolve, reject) {
+        let gotoQuestionPromise = page.goto(url);
+        gotoQuestionPromise
+            .then(function () {
+                let checkboxPromise = waitNClick(".ui-checkbox.theme-m");
+                return checkboxPromise;
+            }).then(function () {
+                let waitForTextBoxPromise = page.waitForSelector(".custominput", { visible: true });
+                return waitForTextBoxPromise;
+            }).then(function () {
+                let writeCodePromise = page.type(".custominput", answers[0], { delay: 4 });
+                return writeCodePromise;
+            }).then(function(){
+                return page.keyboard.down("Control");
+            }).then(function (){
+                return page.keyboard.press("a");
+            }).then(function (){
+                return page.keyboard.press("x");
+            }).then(function(){
+                return page.keyboard.up("Control");
+            }).then(function (){
+                return page.click(".monaco-editor.no-user-select.vs");
+            }).then(function (){
+                return page.keyboard.down("Control");
+            }).then(function (){
+                return page.keyboard.press("a");
+            }).then(function (){
+                return page.keyboard.press("v");
+            }).then(function (){
+                return page.keyboard.up("Control");
+            }).then(function (){
+                return page.click(".ui-btn.ui-btn-normal.ui-btn-primary.pull-right.hr-monaco-submit.ui-btn-styled");
+            }).catch(function (err){
+                console.log(err);
             })
     });
 }
@@ -43,19 +82,22 @@ browserOpenPromise
         return warmUpPromise;
     }).then(function () {
         // wait for all challenges
-        return page.waitForSelector("a[data-analytics='ChallengeListChallengeName']",{visible:true});
+        return page.waitForSelector("a[data-analytics='ChallengeListChallengeName']", { visible: true });
     }).then(function () {
         function getLinks() {
             let allElem = document.querySelectorAll("a[data-analytics='ChallengeListChallengeName']");
             let linksArr = [];
             for (let i = 0; i < allElem.length; i++) {
-                linksArr.push("https://www.hackerrank.com"+allElem[i].getAttribute("href"));
+                linksArr.push("https://www.hackerrank.com" + allElem[i].getAttribute("href"));
             }
             return linksArr;
         }
         let allLinksPromise = page.evaluate(getLinks);
         return allLinksPromise;
-    }).then(function(linksArray){
-        console.log(linksArray)
+    }).then(function (linksArray) {
+        let questionSolvedPromise = questionSolver(linksArray[0]);
+        return questionSolvedPromise;
+    }).then(function () {
+        console.log("question solved");
     })
 
