@@ -28,4 +28,11 @@ browserOpenPromise
     }).then(function (){
         let navigateInterviewPrepPromise = page.click(".ui-btn.ui-btn-normal.ui-btn-large.ui-btn-primary.ui-btn-link.ui-btn-styled");
         return navigateInterviewPrepPromise;
+    }).then(function (){
+        let waitForWarmupPromise = page.waitForSelector(".ui-btn.ui-btn-normal.playlist-card-btn.ui-btn-primary.ui-btn-link.ui-btn-styled");
+        return waitForWarmupPromise;
+    }).then(function (){
+        return page.click(".ui-btn.ui-btn-normal.playlist-card-btn.ui-btn-primary.ui-btn-link.ui-btn-styled");
+    }).then(function (){
+        console.log("Reached warmup");
     })
